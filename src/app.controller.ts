@@ -1,4 +1,6 @@
 import {
+  BadRequestException,
+  Body,
   Controller,
   Delete,
   Get,
@@ -6,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 
@@ -26,12 +29,17 @@ export class AppController {
       title: '반지의 제왕',
     },
   ];
+  #idCounter = 3;
 
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  getMovies() {
-    return this.#movies;
+  getMovies(@Query('title') title: string) {
+    if (!title) {
+      return this.#movies;
+    }
+
+    return this.#movies.filter((movie) => movie.title.startsWith(title));
   }
 
   @Get(':id')
@@ -46,25 +54,41 @@ export class AppController {
   }
 
   @Post()
-  postMovie() {
-    return {
-      id: 3,
-      name: '어벤져스',
-      character: ['아이언맨', '토르', '헐크'],
+  postMovie(@Body('title') title: string): Movie {
+    if (this.#movies.some((movie) => movie.title === title)) {
+      throw new BadRequestException('이미 존재하는 영화 제목입니다.');
+    }
+
+    const newMovie: Movie = {
+      id: this.#idCounter++,
+      title: title,
     };
+
+    this.#movies.push(newMovie);
+    return newMovie;
   }
 
   @Patch(':id')
-  patchMovie() {
-    return {
-      id: 3,
-      name: '어벤져스',
-      character: ['아이언맨', '블랙위도우', '헐크'],
-    };
+  patchMovie(@Param('id') movieId: string, @Body('title') title: string) {
+    const movieIndex = this.#movies.findIndex((movie) => movie.id === +movieId);
+
+    console.log(movieIndex, movieId);
+
+    if (movieIndex === -1) {
+      throw new NotFoundException('존재하지 않는 ID 값의 영화입니다.');
+    }
+
+    this.#movies[movieIndex].title = title;
+    return this.#movies[movieIndex];
   }
 
   @Delete(':id')
-  deleteMovie() {
-    return 3;
+  deleteMovie(@Param('id') movieId: string) {
+    const movieIndex = this.#movies.findIndex((movie) => movie.id === +movieId);
+    if (movieIndex === -1) {
+      throw new NotFoundException('존재하지 않는 ID 값의 영화입니다.');
+    }
+    this.#movies.splice(movieIndex, 1);
+    return movieIndex;
   }
 }
