@@ -1,4 +1,5 @@
 import {
+  ArrayNotEmpty,
   Equals,
   IsAlphanumeric,
   IsArray,
@@ -56,29 +57,34 @@ class PasswordValidation implements ValidatorConstraintInterface {
 
 function isPasswodValid(validationOptions?: ValidationOptions) {
   return function (object: Object, propertyName: string) {
-   registerDecorator({
-    target: object.constructor,
-    propertyName,
-    options: validationOptions,
-    validator: PasswordValidation,
-   })
+    registerDecorator({
+      target: object.constructor,
+      propertyName,
+      options: validationOptions,
+      validator: PasswordValidation,
+    });
   };
 }
 
 export class UpdateMovieDto {
   @IsNotEmpty()
   @IsOptional()
+  @IsString()
   title?: string;
 
-  @IsNotEmpty()
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsNumber({}, { each: true })
   @IsOptional()
-  genre?: string;
+  genreIds?: number[];
 
   @IsNotEmpty()
   @IsOptional()
+  @IsString()
   detail?: string;
 
   @IsNotEmpty()
   @IsOptional()
+  @IsNumber()
   directorId?: number;
 }
