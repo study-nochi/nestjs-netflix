@@ -74,41 +74,7 @@ export class UpdateMovieDto {
   @IsOptional()
   genre?: string;
 
-  // @IsDefined() // null 또는 undefined가 아닌지 검사
-  // @IsOptional()
-  // @Equals('test')
-  // @NotEquals('test')
-  // @IsEmpty()
-  // @IsNotEmpty()
-
-  // Array 타입 검사
-  // @IsIn(["action", "comedy", "drama"])
-  // @IsNotIn(['action', 'comedy', 'drama'])
-
-  // @IsBoolean()
-  // @IsString()
-  // @IsNumber()
-  // @IsInt()
-  // @IsArray()
-  // @IsEnum(MovieGenre)
-  // @IsDateString() // ISO 8601 포맷인지 검사
-
-  // @IsDivisibleBy(2) // 숫자가 2로 나누어 떨어지는지 검사
-  // @IsPositive() // 양수인지 검사
-  // @IsNegative() // 음수인지 검사
-  // @Min(0) // 최소값 검사
-  // @Max(10) // 최대값 검사
-
-  // @Contains('test') // 문자열에 'test'가 포함되어 있는지 검사
-  // @NotContains('test') // 문자열에 'test'가 포함되어 있지 않은지 검사
-  // @IsAlphanumeric() // 문자열이 알파벳 또는 숫자로만 이루어져 있는지 검사
-  // @IsCreditCard() // 신용카드 번호인지 검사
-  // @IsHexColor() // 16진수 색상 코드인지 검사
-  // @MaxLength(10) // 최대 길이 검사
-  // @MinLength(2) // 최소 길이 검사
-  // @IsUUID() // UUID 포맷인지 검사
-  // @IsLatLong() // 위도, 경도 포맷인지 검사
-  // @Validate(PasswordValidation)
-  // @isPasswodValid()
-  test: string;
+  @IsNotEmpty()
+  @IsOptional()
+  detail?: string;
 }
