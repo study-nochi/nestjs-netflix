@@ -7,22 +7,32 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthGuard } from '@nestjs/passport';
 import { LocalAuthGuard } from './strategy/local.strategy';
 import { JWTAuthGuard } from './strategy/jwt.strategy';
+
+const AUTHORIZATION = 'authorization';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  register(@Headers('authorization') token: string) {
+  register(@Headers(AUTHORIZATION) token: string) {
     return this.authService.register(token);
   }
 
   @Post('login')
-  loginUser(@Headers('authorization') token: string) {
+  loginUser(@Headers(AUTHORIZATION) token: string) {
     return this.authService.login(token);
+  }
+
+  @Post('token/access')
+  async rotateAccessToken(@Headers(AUTHORIZATION) token: string) {
+    const payload = await this.authService.parseBearerToken(token, true);
+
+    return {
+      accessToken: await this.authService.issueToken(payload, false),
+    };
   }
 
   @UseGuards(LocalAuthGuard)
